@@ -10,27 +10,39 @@ import { filterPokemonsByName } from "@/helpers/utils";
 
 export default function PokemonList() {
   const [pokemons, setPokemons] = useState<AllPokemonsResults[]>([]);
-
-  const [offset, setOffset] = useState<number>(0);
   const [valueFilter, setValueFilter] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const limit = 10;
 
   async function loadPokemons() {
-    const data = await getAllPokemons(limit, offset);
+    if (loading) return;
+    setLoading(true);
 
-    const detailed = await Promise.all(
-      data.results.map(async (p) => {
-        const details = await getPokemonDetails(p.url);
-        return { ...p, details };
-      })
-    );
+    try {
+      const currentOffset = pokemons.length;
+      const data = await getAllPokemons(limit, currentOffset);
 
-    setPokemons((prev) => [...prev, ...detailed]);
-    setOffset((prev) => prev + limit);
+      const detailed = await Promise.all(
+        data.results.map(async (p) => {
+          const details = await getPokemonDetails(p.url);
+          return { ...p, details };
+        })
+      );
+
+      setPokemons((prev) => {
+        const merged = [...prev, ...detailed];
+        return Array.from(new Map(merged.map((p) => [p.name, p])).values());
+      });
+    } catch (error) {
+      alert(`Erro ao carregar pokémons: ${error}`);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     loadPokemons();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredPokemons = useMemo(() => {
@@ -49,7 +61,7 @@ export default function PokemonList() {
 
                 return (
                   <PokemonCard
-                    key={id}
+                    key={`${id}-${pokemon.name}`}
                     name={pokemon.name}
                     image={
                       pokemon.details.sprites.other.dream_world.front_default
