@@ -22,7 +22,7 @@ export default function PokemonList() {
       data.results.map(async (p) => {
         const details = await getPokemonDetails(p.url);
         return { ...p, details };
-      }),
+      })
     );
 
     setPokemons((prev) => [...prev, ...detailed]);

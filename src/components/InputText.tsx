@@ -8,12 +8,5 @@ export default function InputText({
   placeholder = "Digite o nome do seu pokemon fav...",
   ...rest
 }: InputTextProps) {
-  return (
-    <input
-      placeholder={placeholder}
-      className="bg-white p-2 rounded-xl md:w-1/2 w-full"
-      type="text"
-      {...rest}
-    />
-  );
+  return <input placeholder={placeholder} type="text" {...rest} />;
 }

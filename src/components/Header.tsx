@@ -30,11 +30,13 @@ export default function Header({ setParamChange }: HeaderProps) {
           </h1>
         </div>
 
-        <div className="flex justify-center gap-1 lg:w-1/2 w-full">
+        <div className="relative flex items-center lg:w-1/2 w-full">
           <InputText
+            className="lg:w-full w-full bg-white p-2 rounded-xl"
             onChange={(e) => setParamChange && setParamChange(e.target.value)}
           />
-          <button className="bg-white p-3 rounded-xl cursor-pointer">
+
+          <button className="absolute right-3 text-gray-500 hover:text-gray-700 cursor-pointer">
             <FaSearch />
           </button>
         </div>
